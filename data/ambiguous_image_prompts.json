@@ -1,0 +1,42 @@
+{
+    "an_oil_painting_of_a_snowy_mountain_village-an_oil_painting_of_a_horse": {
+        "canonical_prompt": "an oil painting of a snowy mountain village",
+        "instance_prompt": "an oil painting of a horse"
+    },
+    "a_photo_of_a_duck-a_photo_of_a_rabbit": {
+        "canonical_prompt": "a photo of a duck",
+        "instance_prompt": "a photo of a rabbit"
+    },
+    "an_oil_painting_of_a_library-an_oil_painting_of_a_theater": {
+        "canonical_prompt": "an oil painting of a library",
+        "instance_prompt": "an oil painting of a theater"
+    },
+    "an_oil_painting_of_a_maine_coon-an_oil_painting_of_a_canyon": {
+        "canonical_prompt": "an oil painting of a maine coon",
+        "instance_prompt": "an oil painting of a canyon"
+    },
+    "a_photo_of_a_goldfish-a_photo_of_the_queen_of_England": {
+        "canonical_prompt": "a photo of a goldfish",
+        "instance_prompt": "a photo of the queen of England"
+    },
+    "a_lithograph_of_a_table-a_lithograph_of_a_waterfall": {
+        "canonical_prompt": "a lithograph of a table",
+        "instance_prompt": "a lithograph of a waterfall"
+    },
+    "a_pencil_sketch_of_students_in_a_classroom-a_pencil_sketch_of_flower_arrangements": {
+        "canonical_prompt": "a pencil sketch of students in a classroom",
+        "instance_prompt": "a pencil sketch of flower arrangements"
+    },
+    "a_painting_of_a_horse-a_painting_of_a_dog": {
+        "canonical_prompt": "a painting of a horse",
+        "instance_prompt": "a painting of a dog"
+    },
+    "a_painting_of_a_deer-a_painting_of_a_truck": {
+        "canonical_prompt": "a painting of a deer",
+        "instance_prompt": "a painting of a truck"
+    },
+    "a_photo_of_a_car-a_photo_of_a_tower": {
+        "canonical_prompt": "a photo of a car",
+        "instance_prompt": "a photo of Pisa tower"
+    }
+}
