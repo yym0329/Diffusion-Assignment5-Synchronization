@@ -102,6 +102,13 @@ For the 90&deg; rotation transformation, implement `view()` and `inverse_view()`
 
 As discussed previously, there is more than one way to synchronize multiple denoising processes. For example, we can synchronize the predicted noises $\epsilon(\mathbf{x}^{(t)})$ or the noisy latents $\mathbf{x}^{(t)}$. In this task, we will generate ambiguous images with inner circle rotation using other diffusion synchronization cases. Unlike the 90&deg; rotation, the inner circle rotation affects only the circular region inside the image while the border remains stationary. 
 
+### TODO
+To generate ambiguous images using inner circle rotation, run the following command:
+
+```
+python main.py --app ambiguous_image --prompts '{$CANONICAL_PROMPT}' '{$INSTANCE_PROMPT}' --views_names identity inner_rotate --tag ambiguous_image_inner_rotate --save_dir_now
+```
+
 First, modify `one_step_process()` in `guidance/base_model.py` to synchronize $\epsilon(\mathbf{x}^{(t)})$ and $\mathbf{x}^{(t)}$, respectively. Then, implement `view_inner_rotate()` in `utils/views/view_inner_rotate.py`, which rotates the inner circular parts of the image. Use 90&deg; for inner circle rotation and apply the same prompts as in [Task 2](#task-2-ambiguous-image-generation) to compare the results of the three diffusion synchronization cases:  $\epsilon(\mathbf{x}^{(t)})$, $\mathbf{x}^{(0)}$ and $\mathbf{x}^{(t)}$.
 
 ## What to Submit
