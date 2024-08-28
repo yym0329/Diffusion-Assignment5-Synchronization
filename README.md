@@ -149,7 +149,7 @@ python eval.py --fdir1 {$FDIR} --app ambiguous_images
 - [ ] CLIP score evaluation `eval.json` (output of `eval.py`)
 - [ ] Output results of generated images using the provided prompts
 
-**Task 3**
+**(Optional) Task 3**
 - [ ] CLIP score evaluation `eval.json` of each diffusion synchronization case (output of `eval.py`)
 - [ ] Output results of generated images using the provided prompts of each diffusion synchronization case
 
