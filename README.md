@@ -190,14 +190,13 @@ You will receive a zero score if:
 
 **Your score will incur a 10% deduction for each missing item in the submission item list.**
 
-Each task is worth 15 points. 
+Task 1 and Task 2 are worth 10 points each, while Task 3 (Optional) is worth 5 points.
 
-CLIP Score | Points (/15)
+CLIP Score | Points (Optional Task)
 --- | ---
-0.28 ⬆️ | 15
-0.26 ⬆️ | 10
-0.24 ⬆️ | 5
-0.22 ⬇️ | 0
+0.28 ⬆️ | 10 (5)
+0.26 ⬆️ | 5 (2.5)
+0.22 ⬇️ | 0 (0)
 
 **Failing to reproduce the reported CLIP score will result in a score of zero.**
 
