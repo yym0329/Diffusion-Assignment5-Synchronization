@@ -26,7 +26,7 @@ Image diffusion models trained on Internet-scale datasets can generate photoreal
 In this assignment, we will focus on two applications of diffusion synchronization: arbitrary-sized image and ambiguous image generation generation. We denote the canonical space $\mathcal{Z}$ (e.g., arbitrary-sized images) as the space where a pretrained diffusion model is not provided, and instance spaces as the spaces where pretrained diffusion models are trained (e.g., fixed-size images). Given these two spaces, the projection operation $f$ maps a subset of the canonical space to the instance space, and the unprojection operation $g$ performs the inverse of the projection operation. We will provide the details of the projection and unprojection operations for each application in later sections.
 
 ## Setup
-Use the same environment as [Assignment 5](https://github.com/KAIST-Visual-AI-Group/CS492-Assignment_Score-Distillation/tree/main).
+Use the same environment as [Assignment 4](https://github.com/KAIST-Visual-AI-Group/Diffusion-Assignment4-Distillation).
 
 ## Task 0: Introduction 
 Recall the reverse step of denoising process presented in [Assignment 1](https://github.com/KAIST-Visual-AI-Group/CS492-Assignment_Diffusion-Models):
