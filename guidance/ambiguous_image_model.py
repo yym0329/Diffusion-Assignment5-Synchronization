@@ -98,7 +98,7 @@ class AmbiguousImageModel(BaseModel):
 
         prompt_embeds = [
             self.stage_1.encode_prompt(
-                f"{self.config.style} {p}".strip(),
+                f"{p}".strip(),
                 do_classifier_free_guidance=True,
                 num_images_per_prompt=1,
                 device=self.device,
