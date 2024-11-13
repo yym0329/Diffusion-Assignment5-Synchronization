@@ -1,7 +1,7 @@
 from typing import List, Literal, Union
 import os
-import argparse 
-import glob 
+import argparse
+import glob
 import json
 
 import clip
@@ -67,7 +67,7 @@ class ClipEvaluator(nn.Module):
 
         image_features = self.model.encode_image(image)
         return image_features
-    
+
     @torch.no_grad()
     def forward(self, img_features: torch.Tensor, text_features: torch.Tensor):
         """
@@ -82,11 +82,15 @@ class ClipEvaluator(nn.Module):
         img_features = img_features.reshape(-1, 1, D)
         text_features = text_features.reshape(1, -1, D)
 
-        cos_sim_mat = F.cosine_similarity(img_features, text_features, dim=-1) #[Nimg, Ntxt]
+        cos_sim_mat = F.cosine_similarity(
+            img_features, text_features, dim=-1
+        )  # [Nimg, Ntxt]
         return cos_sim_mat
 
     @torch.no_grad()
-    def measure_clip_sim_from_img_and_text(self, pil_or_img_path: Union[Image.Image, str, os.PathLike], text: str):
+    def measure_clip_sim_from_img_and_text(
+        self, pil_or_img_path: Union[Image.Image, str, os.PathLike], text: str
+    ):
         img_f = self.encode_image(pil_or_img_path)
         txt_f = self.encode_text(text)
         cos_sim = self(img_f, txt_f).squeeze()
@@ -127,11 +131,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--fdir1", type=str, required=True)
     parser.add_argument("--app", type=str, required=True)
-    
+
     args = parser.parse_args()
     assert args.app in ("wide_images", "ambiguous_images")
-    
-    name = "ViT-B/32" # Change from Vit-B/14 -> ViT-B/32
+
+    name = "ViT-B/32"  # Change from Vit-B/14 -> ViT-B/32
     clip_evaluator = ClipEvaluator(name=name).cuda()
 
     fdir1 = args.fdir1  # imgae directory 1
@@ -145,14 +149,14 @@ if __name__ == "__main__":
             prompt = fname.replace("_", " ")
         else:
             raise NotImplementedError(f"Unknown app: {args.app}")
-            
+
         prompt_key = prompt.replace(" ", "_")
         prompt_view_pairs[prompt_key].append(img_path)
 
     metric_dict = {
         "source_dir": fdir1,
     }
-    
+
     final_score = []
     for prompt, img_path_list in prompt_view_pairs.items():
         prompt = prompt.replace("_", " ")
@@ -163,17 +167,16 @@ if __name__ == "__main__":
             # 1. Encode image and text first and measure clip sim.
             img_f.append(clip_evaluator.encode_image(img_path))
         img_f = torch.cat(img_f, dim=0)
-        
+
         cos_sim = clip_evaluator(img_f, txt_f).squeeze().mean().item()
 
         metric_dict[img_path_list[0]] = cos_sim
         final_score.append(cos_sim)
 
     metric_dict["score"] = sum(final_score) / len(final_score)
- 
+
     print("Cosine similarity ", metric_dict["score"])
-    
+
     save_path = os.path.join(args.fdir1, "eval.json")
     with open(save_path, "w") as f:
         json.dump(metric_dict, f, indent=4)
-    

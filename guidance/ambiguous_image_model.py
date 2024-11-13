@@ -4,7 +4,7 @@ from typing import List, Literal, Optional, Union
 import torch
 import torch.nn.functional as F
 from PIL import Image
-import os 
+import os
 import json
 
 from guidance.base_model import BaseModel
@@ -18,7 +18,7 @@ from typing import List, Literal, Optional, Union
 import torch
 import torch.nn.functional as F
 from PIL import Image
-import os 
+import os
 import json
 
 
@@ -51,35 +51,31 @@ class AmbiguousImageModel(BaseModel):
     def __init__(self, config):
         self.config = config
         self.device = torch.device(config.gpu)
-        
+
         super().__init__()
         self.initialize()
 
-        
     def initialize(self):
         super().initialize()
-        
+
         self.num_prompts = len(self.config.prompts)
         self.intermediate_dir = os.path.join(self.output_dir, "intermediate")
         self.result_dir = os.path.join(self.output_dir, "results")
-        
+
         for _dir in [self.intermediate_dir, self.result_dir]:
             os.makedirs(_dir, exist_ok=True)
-            
+
         log_opt = vars(self.config)
         config_path = os.path.join(self.output_dir, "ambiguous_image_config.yaml")
         with open(config_path, "w") as f:
             json.dump(log_opt, f, indent=4)
-
 
     def init_mapper(self, views_names: Optional[List] = None):
         if views_names is None:
             views_names = self.config.views_names
         self.config.views_names = views_names
         print(f"[*] Mappers: {views_names}")
-        self.views = get_views(
-            views_names, self.config.rotate_angle
-        )
+        self.views = get_views(views_names, self.config.rotate_angle)
 
     def init_prompt_embeddings(self, prompts: Optional[List] = None):
         if prompts is None:
@@ -109,9 +105,7 @@ class AmbiguousImageModel(BaseModel):
         prompt_embeds, negative_prompt_embeds = zip(*prompt_embeds)
         prompt_embeds = torch.cat(prompt_embeds)
         negative_prompt_embeds = torch.cat(negative_prompt_embeds)
-        prompt_embeds = torch.cat(
-            [negative_prompt_embeds, prompt_embeds]
-        )  # [2N,L,D]
+        prompt_embeds = torch.cat([negative_prompt_embeds, prompt_embeds])  # [2N,L,D]
 
         return prompt_embeds
 
@@ -159,12 +153,12 @@ class AmbiguousImageModel(BaseModel):
         z_t: [1,C,H,W]
         x_t: [N,C,H,W]
         """
-        
+
         z_t = z_t.squeeze(0)
         num_views = len(self.views)
         x_ts = [self.forward_ft(z_t, i, **kwargs) for i in range(num_views)]
         x_ts = torch.stack(x_ts, 0)
-        
+
         return x_ts
 
     def get_variable(self, var_type):
@@ -179,15 +173,14 @@ class AmbiguousImageModel(BaseModel):
         x_ts: [N,C,H,W]
         z_t: [1,C,H,W]
         """
-    
+
         num_views = len(self.views)
         z_ts = [self.inverse_ft(x_ts[i], i, **kwargs) for i in range(num_views)]
         z_ts = torch.stack(z_ts, 0)
         z_t = torch.mean(z_ts, 0)
         z_t = z_t.unsqueeze(0)
-        
-        return z_t
 
+        return z_t
 
     def compute_noise_preds(self, xts, ts, **kwargs):
         """
@@ -223,9 +216,9 @@ class AmbiguousImageModel(BaseModel):
                 noise_preds_text - noise_preds_uncond
             )
             noise_preds = noise_preds.reshape(*orig_xts_shape[:-3], -1, H, W)
-            
+
             return noise_preds
-        
+
         else:
             orig_xts_shape = xts.shape
             C, H, W = xts.shape[-3], xts.shape[-2], xts.shape[-1]
@@ -246,16 +239,15 @@ class AmbiguousImageModel(BaseModel):
                 noise_preds_text - noise_preds_uncond
             )
             noise_preds = noise_preds.reshape(*orig_xts_shape[:-3], -1, H, W)
-            
-            return noise_preds
 
+            return noise_preds
 
     @torch.no_grad()
     def __call__(self, tag=None, prompts=None, views_names=None, save_dir_now=True):
         self.init_prompt_embeddings(prompts=prompts)
         self.init_mapper(views_names=views_names)
         generator = torch.Generator(device=self.device).manual_seed(self.config.seed)
-        
+
         self.stage_1.scheduler.set_timesteps(
             self.config.num_inference_steps, device=self.device
         )
@@ -267,7 +259,7 @@ class AmbiguousImageModel(BaseModel):
 
         input_params = {"zts": zts, "xts": xts}
         timesteps = self.stage_1.scheduler.timesteps
-        
+
         alphas = torch.sqrt(self.stage_1.scheduler.alphas_cumprod).to(self.device)
         sigmas = torch.sqrt(1 - self.stage_1.scheduler.alphas_cumprod).to(self.device)
         for i, t in enumerate(timesteps):
@@ -282,7 +274,7 @@ class AmbiguousImageModel(BaseModel):
             input_params["zts"] = None
             log_x_prevs = out_params["x_t_1"]
             log_x0s = out_params["x0s"]
-            
+
             """ Logging """
             if (i + 1) % self.config.log_step == 0:
                 log_x_prev_imgs = self.tensor_to_pil_img(log_x_prevs)
@@ -291,9 +283,7 @@ class AmbiguousImageModel(BaseModel):
                 log_img = merge_images([log_x_prev_imgs, log_x0_imgs])
                 log_img.save(f"{self.intermediate_dir}/i={i}_t={t}.png")
 
-        final_denoised = self.forward_mapping(
-            self.inverse_mapping(out_params["x_t_1"])
-        )
+        final_denoised = self.forward_mapping(self.inverse_mapping(out_params["x_t_1"]))
         final_denoised_imgs = self.tensor_to_pil_img(final_denoised)
         if type(final_denoised_imgs) != list:
             final_denoised_imgs = [final_denoised_imgs]
@@ -301,12 +291,12 @@ class AmbiguousImageModel(BaseModel):
             img.save(f"{self.result_dir}/view_{i}.png")
         merge_images(final_denoised_imgs).save(f"{self.result_dir}/final.png")
 
-        # Stage 2 
+        # Stage 2
         xts = self.initialize_latent(
             "instance", generator=generator, model=self.stage_2
         )
         zts = None
-        
+
         previous_stage_imgs = final_denoised
         input_params = {"zts": zts, "xts": xts}
 
@@ -347,19 +337,17 @@ class AmbiguousImageModel(BaseModel):
                 log_img = merge_images([log_x_prev_imgs, log_x0_imgs])
                 log_img.save(f"{self.intermediate_dir}/second_i={i}_t={t}.png")
 
-        final_denoised = self.forward_mapping(
-            self.inverse_mapping(out_params["x_t_1"])
-        )
+        final_denoised = self.forward_mapping(self.inverse_mapping(out_params["x_t_1"]))
         final_denoised_imgs = self.tensor_to_pil_img(final_denoised)
-        
+
         if type(final_denoised_imgs) != list:
             final_denoised_imgs = [final_denoised_imgs]
-        
-        
+
         for i, img in enumerate(final_denoised_imgs):
-            img.save(f"{self.result_dir}/{self.config.prompts[i].replace(' ', '_')}.png")
+            img.save(
+                f"{self.result_dir}/{self.config.prompts[i].replace(' ', '_')}.png"
+            )
         merge_images(final_denoised_imgs).save(f"{self.result_dir}/final.png")
-        
 
     @torch.no_grad()
     def tensor_to_pil_img(self, x) -> Union[Image.Image, List[Image.Image]]:

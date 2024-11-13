@@ -1,9 +1,7 @@
 from PIL import Image
 import torch
-
 import torchvision.transforms.functional as TF
 from torchvision.transforms import InterpolationMode
-
 from .view_base import BaseView
 
 
@@ -12,9 +10,11 @@ class Rotate90CWView(BaseView):
         pass
 
     def view(self, im, background=None, **kwargs):
-        # TODO: Implement forward_mapping
-        raise NotImplementedError("forward_mapping is not implemented yet.")
+        # Rotate the image 90 degrees clockwise
+        return TF.rotate(im, -90, expand=True, interpolation=InterpolationMode.NEAREST)
 
     def inverse_view(self, noise, background=None, **kwargs):
-        # TODO: Implement inverse_mapping
-        raise NotImplementedError("inverse_mapping is not implemented yet.")
+        # Rotate the image 90 degrees counterclockwise
+        return TF.rotate(
+            noise, 90, expand=True, interpolation=InterpolationMode.NEAREST
+        )
