@@ -167,20 +167,67 @@ class BaseModel(metaclass=ABCMeta):
         """
 
         xts = input_params["xts"]
+        # zts = input_params["zts"]
 
+        
+
+        
+        # 1. sync x0 START
+        # Synchronization using SyncTweedies
         eps_preds = self.compute_noise_preds(xts, timestep, **kwargs)
         eps_preds = eps_preds[:, : xts.shape[1], :, :]
+        
         x0s = self.compute_tweedie(xts, eps_preds, timestep, alphas, sigmas, **kwargs)
-
-        # Synchronization using SyncTweedies
         z0s = self.inverse_mapping(
             x0s, var_type="tweedie", **kwargs
         )  # Comment out to skip synchronization
         x0s = self.forward_mapping(
             z0s, bg=x0s, **kwargs
         )  # Comment out to skip synchronization
-
         x_t_1 = self.compute_prev_state(xts, x0s, timestep, **kwargs)
+        # 1. sync x0 END
+
+
+        # 2. sync x_t START
+        # xts = input_params["xts"]
+        # zts = self.inverse_mapping(
+        #     xts, var_type="tweedie", **kwargs
+        # )
+        # xts = self.forward_mapping(
+        #     zts, bg=zts, **kwargs
+        # )
+
+                                   
+
+        # eps_preds = self.compute_noise_preds(xts, timestep, **kwargs)
+        # eps_preds = eps_preds[:, : xts.shape[1], :, :]
+        # x0s = self.compute_tweedie(xts, eps_preds, timestep, alphas, sigmas, **kwargs)
+        # x_t_1 = self.compute_prev_state(xts, x0s, timestep, **kwargs)
+        
+
+        
+        # 2. sync x_t END
+ 
+        # 3. sync eps_t START
+        # xts = input_params["xts"]
+        # eps_preds = self.compute_noise_preds(xts, timestep, **kwargs)
+        # eps_preds = eps_preds[:, : xts.shape[1], :, :]
+        # eps_z = self.inverse_mapping(
+        #     eps_preds, var_type="tweedie", **kwargs
+        # )
+        # zts = self.inverse_mapping(
+        #     xts, var_type="tweedie", **kwargs
+        # )
+        # z0s = self.compute_tweedie(zts, eps_z, timestep, alphas, sigmas, **kwargs)
+        # x0s = self.forward_mapping(z0s, bg=z0s, **kwargs)
+
+        # z_t_1 = self.compute_prev_state(zts, z0s, timestep, **kwargs)
+        # x_t_1 = self.forward_mapping(
+        #     z_t_1, bg=z_t_1, **kwargs
+        # )
+        
+        # sync eps_t END
+
 
         out_params = {
             "x0s": x0s,

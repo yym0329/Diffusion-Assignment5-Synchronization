@@ -1,0 +1,10 @@
+python main.py --app ambiguous_image --prompts "an oil painting of a snowy mountain village" "an oil painting of a horse" --views_names identity inner_rotate --tag ambiguous_image_inner_rotate_case_1 --save_dir_now  --rotate_angle 90
+python main.py --app ambiguous_image --prompts "a photo of a duck" "a photo of a rabbit" --views_names identity inner_rotate --tag ambiguous_image_inner_rotate_case_1 --save_dir_now  --rotate_angle 90
+python main.py --app ambiguous_image --prompts "an oil painting of a library" "an oil painting of a theater" --views_names identity inner_rotate --tag ambiguous_image_inner_rotate_case_1 --save_dir_now  --rotate_angle 90
+python main.py --app ambiguous_image --prompts "an oil painting of a maine coon" "an oil painting of a canyon" --views_names identity inner_rotate --tag ambiguous_image_inner_rotate_case_1 --save_dir_now  --rotate_angle 90
+python main.py --app ambiguous_image --prompts "a photo of a goldfish" "a photo of the queen of England" --views_names identity inner_rotate --tag ambiguous_image_inner_rotate_case_1 --save_dir_now  --rotate_angle 90
+python main.py --app ambiguous_image --prompts "a lithograph of a table" "a lithograph of a waterfall" --views_names identity inner_rotate --tag ambiguous_image_inner_rotate_case_1 --save_dir_now  --rotate_angle 90
+python main.py --app ambiguous_image --prompts "a pencil sketch of students in a classroom" "a pencil sketch of flower arrangements" --views_names identity inner_rotate --tag ambiguous_image_inner_rotate_case_1 --save_dir_now  --rotate_angle 90
+python main.py --app ambiguous_image --prompts "a painting of a horse" "a painting of a dog" --views_names identity inner_rotate --tag ambiguous_image_inner_rotate_case_1 --save_dir_now  --rotate_angle 90
+python main.py --app ambiguous_image --prompts "a painting of a deer" "a painting of a truck" --views_names identity inner_rotate --tag ambiguous_image_inner_rotate_case_1 --save_dir_now  --rotate_angle 90
+python main.py --app ambiguous_image --prompts "a photo of a car" "a photo of Pisa tower" --views_names identity inner_rotate --tag ambiguous_image_inner_rotate_case_1 --save_dir_now  --rotate_angle 90

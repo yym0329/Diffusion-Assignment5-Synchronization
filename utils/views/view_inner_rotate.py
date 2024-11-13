@@ -8,11 +8,30 @@ from .view_base import BaseView
 
 def get_circle_mask(img_size: int, r: int):
     # TODO: Implement get_circle_mask
-    raise NotImplementedError(f"get_circle_mask not implemented")
+    mid_point = (img_size // 2, img_size // 2)
+    def is_interior(midpoint, x, r):
+        return (mid_point[0] - x[0])**2 + (mid_point[1] - x[1])**2 <= r**2
+    
+    mask = torch.zeros((img_size, img_size))
+    for i in range(img_size):
+        for j in range(img_size):
+            mask[i, j] = is_interior(mid_point, (i, j), r)
+    
+    return mask.float()
+    
+    
 
 def inner_rotate_func_with_mask(im: torch.Tensor, mask: torch.Tensor, angle, interpolate=False):
-    # TODO: Implement inner_rotate_func_with_mask
-    raise NotImplementedError(f"inner_rotate_func_with_mask not implemented")
+    rotated_image = TF.rotate(im, angle, interpolation=InterpolationMode.BILINEAR, expand=False)
+    # import pdb
+    # pdb.set_trace()
+
+    rotated_image = rotated_image * mask
+    # print(rotated_image.shape)
+    # print(im.shape)
+    outside_circ = (1 - mask).unsqueeze(0).repeat(3, 1, 1)
+    rotated_image = rotated_image + im * outside_circ
+    return rotated_image
  
 class InnerRotateView(BaseView):
     """
